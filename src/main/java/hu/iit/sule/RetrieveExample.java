@@ -8,7 +8,7 @@ import org.exist.xmldb.EXistResource;
 public class RetrieveExample {
 
     /**
-     * In the following simple example, a document is retrieved from the eXist server and printed to standard output.
+     * In the following simple example, a document is retrieved from the eXist_old server and printed to standard output.
      */
 
     private static String URI = "xmldb:exist://localhost:8080/exist/xmlrpc";
