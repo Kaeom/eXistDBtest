@@ -2,24 +2,22 @@ package hu.iit.sule.eXist2;
 
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.*;
-import org.xmldb.api.modules.XMLResource;
-import org.xmldb.api.modules.XQueryService;
-
-import javax.xml.transform.OutputKeys;
 
 public class UserAndGroupManager {
 
-    private static final String DB = "/db/";//root collection
+    private static String DB = "/db/";//root collection
     private static String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
     private static Collection collection = null;
 
-    public UserAndGroupManager(){
-        initDatabaseDriver();
+    public UserAndGroupManager(String db, String rui){
+        this.DB = db;
+        this.uri = rui;
+        Util.initDatabaseDriver();
     }
 
     public boolean createUser(String adminName, String adminPass, String user, String pass, String group) throws Exception {
         Collection old = collection;//save previos context
-        closeCollection();
+        Util.closeCollection(collection);
         boolean result = false;
         try {
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
@@ -32,11 +30,11 @@ public class UserAndGroupManager {
                     "    sm:create-account(\"" + user + "\", \"" + pass + "\", \"" + group + "\", \"" + "" + "\")\n" +
                     "else\n" +
                     "\tfalse()";
-            result = !execXQuery(query).equals("false");
+            result = !Util.execXQuery(query,collection).equals("false");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            closeCollection();//'logout'
+            Util.closeCollection(collection);//'logout'
             collection = old;
         }
         return result;
@@ -44,7 +42,7 @@ public class UserAndGroupManager {
 
     public boolean deleteUser(String adminName, String adminPass, String deletedUser) throws Exception {
         Collection old = collection;
-        closeCollection();
+        Util.closeCollection(collection);
         boolean userIsDeleted = false;
         try {
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
@@ -54,12 +52,12 @@ public class UserAndGroupManager {
                     "    sm:remove-account(\"" + deletedUser + "\")\n" +
                     "else\n" +
                     "\tfalse()";
-            System.out.println(execXQuery(query));
+            System.out.println(Util.execXQuery(query,collection));
             userIsDeleted = true;
         } catch (XMLDBException e) {
             System.out.println("User delete Exception: " + e.getMessage());
         } finally {
-            closeCollection();
+            Util.closeCollection(collection);
             collection = old;
         }
 
@@ -69,7 +67,7 @@ public class UserAndGroupManager {
 
     public void listUsers(String adminName, String adminPass) throws Exception {
         Collection old = collection;
-        closeCollection();
+        Util.closeCollection(collection);
         try {
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
             String query = "xquery version \"3.1\";\n" +
@@ -78,11 +76,11 @@ public class UserAndGroupManager {
                     "    sm:list-users()\n" +
                     "else\n" +
                     "\tfalse()";
-            System.out.println(execXQuery(query));
+            System.out.println(Util.execXQuery(query, collection));
         } catch (Exception e) {
             System.out.println("User list exception: " + e.getMessage());
         } finally {
-            closeCollection();
+            Util.closeCollection(collection);
             collection = old;
         }
     }
@@ -92,7 +90,7 @@ public class UserAndGroupManager {
         try {
             String query = "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\"; \n" +
                     "sm:user-exists(\"" + user + "\")";
-            result = execXQuery(query).equals("true");
+            result = Util.execXQuery(query,collection).equals("true");
 
         } catch (Exception ignored) {
 
@@ -104,7 +102,7 @@ public class UserAndGroupManager {
 
     public boolean createGroup(String adminName, String adminPass, String group, String group_desc) throws Exception {
         Collection old = collection;
-        closeCollection();
+        Util.closeCollection(collection);
         boolean result = false;
         try {
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
@@ -117,11 +115,11 @@ public class UserAndGroupManager {
                     "    sm:create-group(\"" + group + "\",\"" + group_desc + "\")\n" +
                     "else\n" +
                     "\tfalse()";
-            result = !execXQuery(query).equals("false");
+            result = !Util.execXQuery(query,collection).equals("false");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            closeCollection();//'logout'
+            Util.closeCollection(collection);//'logout'
             collection = old;
         }
         return result;
@@ -129,7 +127,7 @@ public class UserAndGroupManager {
 
     public boolean deleteGroup(String adminName, String adminPass, String deletedGroup) throws Exception {
         Collection old = collection;
-        closeCollection();
+        Util.closeCollection(collection);
         boolean groupIsDeleted = false;
         try {
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
@@ -139,12 +137,12 @@ public class UserAndGroupManager {
                     "    sm:remove-group(\"" + deletedGroup + "\")\n" +
                     "else\n" +
                     "\tfalse()\n";
-            System.out.println(execXQuery(query));
+            System.out.println(Util.execXQuery(query,collection));
             groupIsDeleted = true;
         } catch (XMLDBException e) {
             System.out.println("Group delete Exception: " + e.getMessage());
         } finally {
-            closeCollection();
+            Util.closeCollection(collection);
             collection = old;
         }
         return groupIsDeleted;
@@ -153,7 +151,7 @@ public class UserAndGroupManager {
 
     public void listGroup(String adminName, String adminPass) throws Exception {
         Collection old = collection;
-        closeCollection();
+        Util.closeCollection(collection);
         try {
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
             String query = "xquery version \"3.1\";\n" +
@@ -162,11 +160,11 @@ public class UserAndGroupManager {
                     "    sm:list-groups()\n" +
                     "else\n" +
                     "\tfalse()";
-            System.out.println(execXQuery(query));
+            System.out.println(Util.execXQuery(query,collection));
         } catch (Exception e) {
             System.out.println("Group list exception: " + e.getMessage());
         } finally {
-            closeCollection();
+            Util.closeCollection(collection);
             collection = old;
         }
     }
@@ -176,45 +174,11 @@ public class UserAndGroupManager {
         try {
             String query = "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
                     "sm:group-exists(\"" + group + "\")";
-            result = execXQuery(query).equals("true");
+            result = Util.execXQuery(query,collection).equals("true");
         } catch (Exception e) {
 
         }
         return result;
-    }
-
-
-    private void initDatabaseDriver(){
-        try{
-            Class aClass = Class.forName("org.exist.xmldb.DatabaseImpl");
-            //System.out.println("aClass.getName() = " + aClass.getName());
-            Database database = (Database) aClass.newInstance();
-            database.setProperty("create-database", "true");
-            DatabaseManager.registerDatabase(database);
-        }catch (Exception e){
-            System.out.println("Database Initialization exception: " + e.getMessage());
-        }
-
-    }
-
-    private void closeCollection() throws Exception {
-        if (collection != null)
-            collection.close();
-    }
-
-
-    private String execXQuery(String query) throws Exception {
-        XQueryService service = (XQueryService) collection.getService("XQueryService", "1.0");
-        service.setProperty(OutputKeys.INDENT, "yes");
-        service.setProperty(OutputKeys.ENCODING, "UTF-8");
-        CompiledExpression compiled = service.compile(query);
-        ResourceSet result = service.execute(compiled);//service.query(res,query);//since the queries will be simple, compilation should not bee needed
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < (int) result.getSize(); i++) {
-            XMLResource r = (XMLResource) result.getResource((long) i);
-            sb.append(r.getContent().toString()).append("\n");
-        }
-        return sb.toString().trim();
     }
 
 
