@@ -1,63 +1,67 @@
 package hu.iit.sule.eXist2;
-
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.*;
 
 public class UserAndGroupManager {
 
-    private static String DB = "/db/";//root collection
-    private static String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
-    private static Collection collection = null;
+    private static final String DB = "/db/";//root collection
+    private static Util util = new Util();
 
-    public UserAndGroupManager(String db, String rui){
-        this.DB = db;
+    private String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
+    private Collection collection = null;
+    private String adminUser = "admin";
+    private String adminPass = "admin";
+
+    public UserAndGroupManager(String rui,String adminUser, String adminPass){
+        //util.initDatabaseDriver("org.exist.xmldb.DatabaseImpl");
         this.uri = rui;
-        Util.initDatabaseDriver();
+        this.adminUser = adminUser;
+        this.adminPass = adminPass;
     }
 
-    public boolean createUser(String adminName, String adminPass, String user, String pass, String group) throws Exception {
+    public boolean createUser(String user, String pass, String group) throws Exception {
         Collection old = collection;//save previos context
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         boolean result = false;
         try {
-            collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
+            collection = DatabaseManager.getCollection(uri + DB);
             if (userExists(user))//first: is user already existing?
                 return true;
             String query = "xquery version \"3.1\";\n" +
                     "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
                     "\n" +
-                    "if(xmldb:login(\"/db\",\"" + adminName + "\", \"" + adminPass + "\" ,false())) then\n" +
+                    "if(xmldb:login(\"/db\",\"" + adminUser + "\", \"" + adminPass + "\" ,false())) then\n" +
                     "    sm:create-account(\"" + user + "\", \"" + pass + "\", \"" + group + "\", \"" + "" + "\")\n" +
                     "else\n" +
                     "\tfalse()";
-            result = !Util.execXQuery(query,collection).equals("false");
+            result = !util.execXQuery(query,collection).equals("false");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Util.closeCollection(collection);//'logout'
+            util.closeCollection(collection);//'logout'
             collection = old;
         }
         return result;
     }
 
-    public boolean deleteUser(String adminName, String adminPass, String deletedUser) throws Exception {
+    public boolean deleteUser(String deletedUser) throws Exception {
         Collection old = collection;
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         boolean userIsDeleted = false;
         try {
-            collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
+            collection = DatabaseManager.getCollection(uri + DB, adminUser, adminPass);
             String query = "xquery version \"3.1\";\n" +
                     "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
-                    "if(xmldb:login(\"/db\",\"" + adminName + "\", \"" + adminPass + "\" ,false())) then\n" +
+                    "if(xmldb:login(\"/db\",\"" + adminUser + "\", \"" + adminPass + "\" ,false())) then\n" +
                     "    sm:remove-account(\"" + deletedUser + "\")\n" +
                     "else\n" +
                     "\tfalse()";
-            System.out.println(Util.execXQuery(query,collection));
+            System.out.println(util.execXQuery(query,collection));
             userIsDeleted = true;
         } catch (XMLDBException e) {
             System.out.println("User delete Exception: " + e.getMessage());
         } finally {
-            Util.closeCollection(collection);
+            util.closeCollection(collection);
             collection = old;
         }
 
@@ -65,22 +69,22 @@ public class UserAndGroupManager {
 
     }
 
-    public void listUsers(String adminName, String adminPass) throws Exception {
+    public void listUsers() throws Exception {
         Collection old = collection;
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         try {
-            collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
+            collection = DatabaseManager.getCollection(uri + DB, adminUser, adminPass);
             String query = "xquery version \"3.1\";\n" +
                     "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
-                    "if(xmldb:login(\"/db\",\"" + adminName + "\", \"" + adminPass + "\" ,false())) then\n" +
+                    "if(xmldb:login(\"/db\",\"" + adminUser + "\", \"" + adminPass + "\" ,false())) then\n" +
                     "    sm:list-users()\n" +
                     "else\n" +
                     "\tfalse()";
-            System.out.println(Util.execXQuery(query, collection));
+            System.out.println(util.execXQuery(query, collection));
         } catch (Exception e) {
             System.out.println("User list exception: " + e.getMessage());
         } finally {
-            Util.closeCollection(collection);
+            util.closeCollection(collection);
             collection = old;
         }
     }
@@ -90,7 +94,7 @@ public class UserAndGroupManager {
         try {
             String query = "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\"; \n" +
                     "sm:user-exists(\"" + user + "\")";
-            result = Util.execXQuery(query,collection).equals("true");
+            result = util.execXQuery(query,collection).equals("true");
 
         } catch (Exception ignored) {
 
@@ -100,71 +104,71 @@ public class UserAndGroupManager {
 
 
 
-    public boolean createGroup(String adminName, String adminPass, String group, String group_desc) throws Exception {
+    public boolean createGroup(String group, String group_desc) throws Exception {
         Collection old = collection;
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         boolean result = false;
         try {
-            collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
+            collection = DatabaseManager.getCollection(uri + DB, adminUser, adminPass);
             if (groupExists(group))//first: is group already existing?
                 return true;
             String query = "xquery version \"3.1\";\n" +
                     "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
                     "\n" +
-                    "if(xmldb:login(\"/db\",\"" + adminName + "\", \"" + adminPass + "\" ,false())) then\n" +
+                    "if(xmldb:login(\"/db\",\"" + adminUser + "\", \"" + adminPass + "\" ,false())) then\n" +
                     "    sm:create-group(\"" + group + "\",\"" + group_desc + "\")\n" +
                     "else\n" +
                     "\tfalse()";
-            result = !Util.execXQuery(query,collection).equals("false");
+            result = !util.execXQuery(query,collection).equals("false");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Util.closeCollection(collection);//'logout'
+            util.closeCollection(collection);//'logout'
             collection = old;
         }
         return result;
     }
 
-    public boolean deleteGroup(String adminName, String adminPass, String deletedGroup) throws Exception {
+    public boolean deleteGroup(String deletedGroup) throws Exception {
         Collection old = collection;
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         boolean groupIsDeleted = false;
         try {
-            collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
+            collection = DatabaseManager.getCollection(uri + DB, adminUser, adminPass);
             String query = "xquery version \"3.1\";\n" +
                     "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
-                    "if(xmldb:login(\"/db\",\"" + adminName + "\", \"" + adminPass + "\" ,false())) then\n" +
+                    "if(xmldb:login(\"/db\",\"" + adminUser + "\", \"" + adminPass + "\" ,false())) then\n" +
                     "    sm:remove-group(\"" + deletedGroup + "\")\n" +
                     "else\n" +
                     "\tfalse()\n";
-            System.out.println(Util.execXQuery(query,collection));
+            System.out.println(util.execXQuery(query,collection));
             groupIsDeleted = true;
         } catch (XMLDBException e) {
             System.out.println("Group delete Exception: " + e.getMessage());
         } finally {
-            Util.closeCollection(collection);
+            util.closeCollection(collection);
             collection = old;
         }
         return groupIsDeleted;
 
     }
 
-    public void listGroup(String adminName, String adminPass) throws Exception {
+    public void listGroup() throws Exception {
         Collection old = collection;
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         try {
-            collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
+            collection = DatabaseManager.getCollection(uri + DB, adminUser, adminPass);
             String query = "xquery version \"3.1\";\n" +
                     "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
-                    "if(xmldb:login(\"/db\",\"" + adminName + "\", \"" + adminPass + "\" ,false())) then\n" +
+                    "if(xmldb:login(\"/db\",\"" + adminUser + "\", \"" + adminPass + "\" ,false())) then\n" +
                     "    sm:list-groups()\n" +
                     "else\n" +
                     "\tfalse()";
-            System.out.println(Util.execXQuery(query,collection));
+            System.out.println(util.execXQuery(query,collection));
         } catch (Exception e) {
             System.out.println("Group list exception: " + e.getMessage());
         } finally {
-            Util.closeCollection(collection);
+            util.closeCollection(collection);
             collection = old;
         }
     }
@@ -174,13 +178,10 @@ public class UserAndGroupManager {
         try {
             String query = "import module namespace sm=\"http://exist-db.org/xquery/securitymanager\";\n" +
                     "sm:group-exists(\"" + group + "\")";
-            result = Util.execXQuery(query,collection).equals("true");
+            result = util.execXQuery(query,collection).equals("true");
         } catch (Exception e) {
 
         }
         return result;
     }
-
-
-
 }

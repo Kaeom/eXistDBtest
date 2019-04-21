@@ -12,9 +12,9 @@ import javax.xml.transform.OutputKeys;
 
 public class Util {
 
-    public static void initDatabaseDriver(){
+    public void initDatabaseDriver(String driver){
         try{
-            Class aClass = Class.forName("org.exist.xmldb.DatabaseImpl");
+            Class aClass = Class.forName(driver);
             //System.out.println("aClass.getName() = " + aClass.getName());
             Database database = (Database) aClass.newInstance();
             database.setProperty("create-database", "true");
@@ -22,16 +22,14 @@ public class Util {
         }catch (Exception e){
             System.out.println("Database Initialization exception: " + e.getMessage());
         }
-
     }
 
-    public static void closeCollection(Collection collection) throws Exception {
+    public void closeCollection(Collection collection) throws Exception {
         if (collection != null)
             collection.close();
     }
 
-
-    public static String execXQuery(String query, Collection collection) throws Exception {
+    public String execXQuery(String query, Collection collection) throws Exception {
         XQueryService service = (XQueryService) collection.getService("XQueryService", "1.0");
         service.setProperty(OutputKeys.INDENT, "yes");
         service.setProperty(OutputKeys.ENCODING, "UTF-8");

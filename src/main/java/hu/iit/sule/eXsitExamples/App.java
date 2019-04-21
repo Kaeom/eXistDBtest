@@ -1,4 +1,4 @@
-package hu.iit.sule;
+package hu.iit.sule.eXsitExamples;
 
 import hu.iit.sule.eXist_old.Exist;
 import hu.iit.sule.eXist_old.UserAndGroupManager;

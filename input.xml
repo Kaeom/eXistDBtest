@@ -1,0 +1,6 @@
+<employee>
+    <empId>1234</empId>
+    <first_name>John</first_name>
+    <lastName>Doe</lastName>
+    <designation>Manager</designation>
+</employee>

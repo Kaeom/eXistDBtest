@@ -1,0 +1,53 @@
+<v:history xmlns:v="http://exist-db.org/versioning">
+    <v:document>/db/insert/test.xml</v:document>
+    <v:revisions>
+        <v:revision rev="1">
+            <v:date>2019-04-20T22:25:17.83+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="2">
+            <v:date>2019-04-20T22:25:17.861+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="3">
+            <v:date>2019-04-20T22:25:17.861+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="4">
+            <v:date>2019-04-20T22:25:17.877+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="5">
+            <v:date>2019-04-20T22:25:17.877+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="6">
+            <v:date>2019-04-20T22:25:55.565+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="7">
+            <v:date>2019-04-20T22:25:55.565+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="8">
+            <v:date>2019-04-20T22:25:55.565+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="9">
+            <v:date>2019-04-20T22:25:55.565+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="10">
+            <v:date>2019-04-20T22:25:55.581+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="11">
+            <v:date>2019-04-20T22:26:52.148+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+        <v:revision rev="12">
+            <v:date>2019-04-20T22:26:52.2+02:00</v:date>
+            <v:user>admin</v:user>
+        </v:revision>
+    </v:revisions>
+</v:history>

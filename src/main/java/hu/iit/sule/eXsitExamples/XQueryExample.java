@@ -1,4 +1,4 @@
-package hu.iit.sule;
+package hu.iit.sule.eXsitExamples;
 
 import org.xmldb.api.base.*;
 import org.xmldb.api.modules.XQueryService;

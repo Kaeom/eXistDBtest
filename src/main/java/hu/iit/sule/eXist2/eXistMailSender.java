@@ -8,19 +8,19 @@ import javax.xml.crypto.Data;
 
 public class eXistMailSender {
 
-    private static String DB = "/db/";//root collection
-    private static String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
+    private static final String DB = "/db/";//root collection
+    private String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
     private static Collection collection = null;
+    private static Util util = new Util();
 
-    public eXistMailSender(String db, String rui){
-        this.DB = db;
+    public eXistMailSender(String rui){
         this.uri = rui;
-        Util.initDatabaseDriver();
+        //util.initDatabaseDriver("org.exist.xmldb.DatabaseImpl");
     }
 
     public boolean sendMail(String adminName, String adminPass, Mail mail) throws Exception {
         Collection old = collection;
-        Util.closeCollection(collection);
+        util.closeCollection(collection);
         boolean result = false;
         try{
             collection = DatabaseManager.getCollection(uri + DB, adminName, adminPass);
@@ -42,11 +42,11 @@ public class eXistMailSender {
                     "else\n" +
                     "  false()";
 
-            result = Util.execXQuery(query,collection).equals("true");
+            result = util.execXQuery(query,collection).equals("true");
         }catch (Exception e){
             System.out.println("eXistMailSender exception: " + e.getMessage());
         }finally {
-            Util.closeCollection(collection);
+            util.closeCollection(collection);
             collection = old;
         }
         return result;
