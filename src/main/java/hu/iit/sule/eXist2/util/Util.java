@@ -1,4 +1,4 @@
-package hu.iit.sule.eXist2;
+package hu.iit.sule.eXist2.util;
 
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;

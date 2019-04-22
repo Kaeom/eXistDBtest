@@ -1,8 +1,11 @@
 package hu.iit.sule.eXist2;
 
-import hu.iit.sule.eXist2.history.ParseHistory;
+import hu.iit.sule.eXist2.history.ResourceVersionManager;
 import hu.iit.sule.eXist2.history.model.eXistVersionModel;
+import hu.iit.sule.eXist2.mailSenders.eXistMailSender;
 import hu.iit.sule.eXist2.model.Mail;
+import hu.iit.sule.eXist2.userAndGroupManager.UserAndGroupManager;
+import hu.iit.sule.eXist2.util.Util;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -13,10 +16,10 @@ public class App {
     private static String adminUser = "admin";
     private static String adminPass = "admin";
 
-    private static ParseHistory parseHistory = new ParseHistory("xmldb:exist://localhost:8080/exist/xmlrpc","admin","admin");
+    private static ResourceVersionManager resourceVersionManager = new ResourceVersionManager("xmldb:exist://localhost:8080/exist/xmlrpc","admin","admin");
 
     private static UserAndGroupManager userAndGroupManager = new UserAndGroupManager(uri,adminUser, adminPass);
-    private static eXistMailSender eXistMailSender = new eXistMailSender(uri);
+    private static hu.iit.sule.eXist2.mailSenders.eXistMailSender eXistMailSender = new eXistMailSender(uri);
     private static Scanner sc = new Scanner(System.in);
     private static int chose;
 
@@ -84,7 +87,9 @@ public class App {
                     break;
                 }
                 case 9: {
-                    parseHistory.getChanges("/db/history_test/videos.xml",26);
+                    System.out.println("Version number: ");
+                    int version = Integer.parseInt(sc.nextLine());
+                    resourceVersionManager.getChanges("/db/history_test/videos.xml",version);
                     break;
                 }
             }
@@ -94,7 +99,7 @@ public class App {
 
     private static void testHistory() throws Exception {
 
-        ArrayList<eXistVersionModel> evmList = parseHistory.getResourceHistory("/db/history_test/videos.xml");
+        ArrayList<eXistVersionModel> evmList = resourceVersionManager.getResourceHistory("/db/history_test/videos.xml");
         //print evmList
         for (eXistVersionModel e: evmList) {
             System.out.println("" + e.getRev() + " " + e.getDate() + " " + e.getUser());

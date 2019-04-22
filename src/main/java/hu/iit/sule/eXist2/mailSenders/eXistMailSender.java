@@ -1,10 +1,9 @@
-package hu.iit.sule.eXist2;
+package hu.iit.sule.eXist2.mailSenders;
 
+import hu.iit.sule.eXist2.util.Util;
 import hu.iit.sule.eXist2.model.Mail;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
-
-import javax.xml.crypto.Data;
 
 public class eXistMailSender {
 

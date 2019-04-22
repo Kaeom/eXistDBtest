@@ -1,4 +1,5 @@
-package hu.iit.sule.eXist2;
+package hu.iit.sule.eXist2.userAndGroupManager;
+import hu.iit.sule.eXist2.util.Util;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.*;
 

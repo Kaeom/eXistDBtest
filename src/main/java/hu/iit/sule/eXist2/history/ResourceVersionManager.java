@@ -1,6 +1,6 @@
 package hu.iit.sule.eXist2.history;
 
-import hu.iit.sule.eXist2.Util;
+import hu.iit.sule.eXist2.util.Util;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import hu.iit.sule.eXist2.history.model.eXistVersionModel;
 import org.xmldb.api.base.XMLDBException;
 
-public class ParseHistory {
+public class ResourceVersionManager {
 
     private static final String DB = "/db/";//root collection
     private String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
@@ -28,7 +28,7 @@ public class ParseHistory {
     private String adminPass = "admin";
     private static Util util = new Util();
 
-    public ParseHistory(String uri, String adminUser, String adminPass) {
+    public ResourceVersionManager(String uri, String adminUser, String adminPass) {
         this.uri = uri;
         this.adminUser = adminUser;
         this.adminPass = adminPass;
@@ -36,6 +36,32 @@ public class ParseHistory {
 
     public ArrayList<eXistVersionModel> getResourceHistory(String resource) throws Exception {
         return ReadHistoryXML(getHistoryFromDB(resource));
+    }
+
+    public void setVersioningToCollection(String coll){
+        //if coll == null => all collection versioning has been enabled
+        coll = "";
+        String query="xquery version \"3.1\";\n" +
+                "let $doc := doc(\"/db/system/config/db/" + coll + "collection.xconf\")\n" +
+                "return update insert \n" +
+                "    <trigger class=\"org.exist.versioning.VersioningTrigger\">\n" +
+                "    <parameter name=\"overwrite\" value=\"yes\"/>\n" +
+                "    </trigger>\n" +
+                "into $doc//triggers";
+        //add trigger to collection collection.xconf file
+
+    }
+
+    public void removeVersioninFromCollection(String coll){
+        coll = "";
+        String query="xquery version \"3.1\";\n" +
+                "let $doc := doc(\"/db/system/config/db/" + coll + "collection.xconf\")\n" +
+                "return update delete \n" +
+                "    <trigger class=\"org.exist.versioning.VersioningTrigger\">\n" +
+                "    <parameter name=\"overwrite\" value=\"yes\"/>\n" +
+                "    </trigger>\n" +
+                "into $doc//triggers";
+        //remove versioning trigger from collection.xconf file
     }
 
     /**
