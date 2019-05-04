@@ -3,15 +3,15 @@ package hu.iit.sule.eXist2.collectionManager;
 public class CollectionManager {
 
 
-    public void createCollection(String collUri, String collName) {
+    public boolean createCollection(String collUri, String collName) {
         //xmldb:create-collection
     }
 
-    public void addResource(String collUri, String resName, String content){
+    public boolean addResource(String collUri, String resName, String content){
         //xmldb:store($collection-uri as xs:string, $resource-name as xs:string?, $contents as item()) as xs:string?
     }
 
-    public void removeCollOrResource(String coll, String res) {
+    public boolean removeCollOrResource(String coll, String res) {
         if (res.isEmpty()) {
             //collection remove
         } else {
@@ -19,19 +19,19 @@ public class CollectionManager {
         }
     }
 
-    public void getDocumentData(String res) {
+    public String getDocumentData(String res) {
         //xmldb:document($document-uris as xs:string+) as node()
     }
 
-    public void getChildCollections() {
+    public String getChildCollections() {
         //xmldb:get-child-collections($collection-uri as xs:string) as xs:string*
     }
 
-    public void getChildResources() {
+    public String getChildResources() {
         //xmldb:get-child-resources($collection-uri as item()) as xs:string*
     }
 
-    public void getResOrCollCreateDate(String coll, String res) {
+    public String getResOrCollCreateDate(String coll, String res) {
         //xmldb:created($collection-uri as xs:string, $resource as xs:string) as xs:dateTime
         if (res.isEmpty()) {
             //collection date
@@ -40,7 +40,7 @@ public class CollectionManager {
         }
     }
 
-    public void moveCollOrRes(String collFrom, String collTo, String res) {
+    public boolean moveCollOrRes(String collFrom, String collTo, String res) {
         if (res.isEmpty()) {
             //collection move
         } else {
@@ -48,7 +48,7 @@ public class CollectionManager {
         }
     }
 
-    public void copyCollOrRes(String collFrom, String collTo, String res) {
+    public boolean copyCollOrRes(String collFrom, String collTo, String res) {
         if (res.isEmpty()) {
             //collection copy
         } else {
@@ -56,11 +56,11 @@ public class CollectionManager {
         }
     }
 
-    public void renameColl(String collUri, String newName) {
+    public boolean renameColl(String collUri, String newName) {
         //xmldb:rename($source-collection-uri as xs:string, $new-collection-name as xs:string) as item()
     }
 
-    public void renameRes(String collUri, String res, String newName) {
+    public boolean renameRes(String collUri, String res, String newName) {
         //xmldb:rename($collection-uri as xs:string, $resource as xs:string, $new-resource-name as xs:string) as item()
     }
 }
