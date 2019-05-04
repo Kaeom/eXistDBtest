@@ -19,15 +19,15 @@ public class CollectionManager {
         }
     }
 
-    public String getDocumentData(String res) {
+    public String getDocumentData(String resUri) {
         //xmldb:document($document-uris as xs:string+) as node()
     }
 
-    public String getChildCollections() {
+    public String getChildCollections(String collUri) {
         //xmldb:get-child-collections($collection-uri as xs:string) as xs:string*
     }
 
-    public String getChildResources() {
+    public String getChildResources(String collUri) {
         //xmldb:get-child-resources($collection-uri as item()) as xs:string*
     }
 
