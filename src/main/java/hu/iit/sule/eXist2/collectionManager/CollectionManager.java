@@ -3,7 +3,7 @@ package hu.iit.sule.eXist2.collectionManager;
 public class CollectionManager {
 
 
-    public void createCollection() {
+    public void createCollection(String collUri, String collName) {
         //xmldb:create-collection
     }
 
